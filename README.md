@@ -11,8 +11,10 @@ It is designed for users with Ubuntu in English or Spanish. The automated setup 
 - Installs the base GNOME tools
 - Installs the WhiteSur GTK theme, icon theme, and cursors
 - Applies a light macOS-style appearance
+- Applies macOS-inspired typography with `Noto Sans` and `Noto Sans Mono`
 - Moves window buttons to the left
 - Configures the dock at the bottom with auto-hide
+- Tunes touchpad, terminal, file manager, and keybindings for a more Mac-like feel
 - Applies extra GNOME polish with a post-install step
 - Verifies the final setup with a check script
 - Documents the optional Extension Manager tweaks in English and Spanish
@@ -51,11 +53,15 @@ The installer applies these system settings:
 - `WhiteSur` icon theme
 - `WhiteSur-cursors` cursor theme
 - light color scheme
+- `Noto Sans` interface fonts
 - left-side window buttons
 - bottom dock
 - dock auto-hide
 - 56px dock icons
-- Cantarell fonts as a safe default
+- Finder-like list view in Nautilus
+- light GNOME Terminal with larger monospace font
+- `Super+W`, `Super+M`, `Super+T`, `Super+N` convenience shortcuts
+- more Mac-like touchpad behavior
 
 It also installs:
 
@@ -129,10 +135,12 @@ Then follow the bilingual guide:
 
 - `Shell theme did not change`
   Install and enable `User Themes`, then run `./scripts/post-install.sh` again and log out.
+- `Extensions are enabled but Cider-Shell still says they are missing`
+  Run `./scripts/check.sh` again. Newer versions detect extensions in `~/.local/share/gnome-shell/extensions`.
 - `Dock settings did not apply`
   Run `./scripts/check.sh` to see whether your system is using `ubuntu-dock` or `dash-to-dock`.
 - `Blur my Shell or Just Perfection settings were skipped`
-  The extension must be installed and enabled before `./scripts/post-install.sh` can configure it.
+  The extension must be installed and enabled before `./scripts/post-install.sh` can configure it. If it was installed from Extension Manager, the script will also check `~/.local/share/gnome-shell/extensions`.
 - `Wallpaper did not update`
   Run `./scripts/apply-wallpaper.sh daybreak.svg` manually, then log out and back in if needed.
 - `I want to revert everything`

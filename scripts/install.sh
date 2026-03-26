@@ -74,10 +74,10 @@ gsettings set org.gnome.desktop.interface gtk-theme "WhiteSur-Light"
 gsettings set org.gnome.desktop.interface icon-theme "WhiteSur"
 gsettings set org.gnome.desktop.interface cursor-theme "WhiteSur-cursors"
 gsettings set org.gnome.desktop.interface color-scheme "prefer-light"
-gsettings set org.gnome.desktop.interface font-name "Cantarell 11"
-gsettings set org.gnome.desktop.interface document-font-name "Cantarell 11"
-gsettings set org.gnome.desktop.interface monospace-font-name "Monospace 12"
-gsettings set org.gnome.desktop.wm.preferences titlebar-font "Cantarell Bold 11"
+gsettings set org.gnome.desktop.interface font-name "Noto Sans 11"
+gsettings set org.gnome.desktop.interface document-font-name "Noto Sans 11"
+gsettings set org.gnome.desktop.interface monospace-font-name "Noto Sans Mono 12"
+gsettings set org.gnome.desktop.wm.preferences titlebar-font "Noto Sans Bold 11"
 gsettings set org.gnome.desktop.wm.preferences button-layout "close,minimize,maximize:"
 gsettings set org.gnome.desktop.interface clock-show-weekday false
 gsettings set org.gnome.desktop.interface clock-show-seconds false
@@ -86,15 +86,37 @@ gsettings set org.gnome.desktop.interface show-battery-percentage true
 gsettings set org.gnome.desktop.interface enable-animations true
 gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
+gsettings set org.gnome.desktop.peripherals.touchpad click-method "fingers"
+gsettings set org.gnome.desktop.peripherals.touchpad middle-click-emulation true
+gsettings set org.gnome.desktop.peripherals.touchpad speed 0.3
 gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
 gsettings set org.gnome.desktop.background picture-options "zoom"
 gsettings set org.gnome.desktop.screensaver picture-options "zoom"
 gsettings set org.gnome.nautilus.preferences show-delete-permanently true
 gsettings set org.gnome.nautilus.preferences default-folder-viewer "list-view"
 gsettings set org.gnome.shell favorite-apps "['firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']"
+gsettings set org.gnome.desktop.wm.keybindings close "['<Alt>F4', '<Super>w']"
+gsettings set org.gnome.desktop.wm.keybindings minimize "['<Super>h', '<Super>m']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys terminal "['<Primary><Alt>t', '<Super>t']"
+gsettings set org.gnome.settings-daemon.plugins.media-keys home "['<Super>e', '<Super>n']"
+gsettings set org.gnome.Terminal.Legacy.Settings theme-variant "light"
+gsettings set org.gnome.Terminal.Legacy.Settings default-show-menubar false
+gsettings set org.gnome.mutter auto-maximize false
+gsettings set org.gnome.mutter focus-change-on-pointer-rest false
 
 if gsettings list-schemas | grep -qx "org.gnome.shell.extensions.user-theme"; then
   gsettings set org.gnome.shell.extensions.user-theme name "WhiteSur-Light"
+fi
+
+if gsettings writable org.gnome.Terminal.ProfilesList default >/dev/null 2>&1; then
+  DEFAULT_TERMINAL_PROFILE="$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d \')"
+  TERMINAL_PROFILE_PATH="/org/gnome/terminal/legacy/profiles:/:${DEFAULT_TERMINAL_PROFILE}/"
+  gsettings set "org.gnome.Terminal.Legacy.Profile:${TERMINAL_PROFILE_PATH}" use-system-font false
+  gsettings set "org.gnome.Terminal.Legacy.Profile:${TERMINAL_PROFILE_PATH}" font "Noto Sans Mono 13"
+  gsettings set "org.gnome.Terminal.Legacy.Profile:${TERMINAL_PROFILE_PATH}" default-size-columns 96
+  gsettings set "org.gnome.Terminal.Legacy.Profile:${TERMINAL_PROFILE_PATH}" default-size-rows 28
+  gsettings set "org.gnome.Terminal.Legacy.Profile:${TERMINAL_PROFILE_PATH}" scrollbar-policy "never"
+  gsettings set "org.gnome.Terminal.Legacy.Profile:${TERMINAL_PROFILE_PATH}" visible-name "Cider Light"
 fi
 
 log "Configuring dock"
