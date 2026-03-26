@@ -6,7 +6,7 @@
 
 <br>
 
-**[→ Run the local installer](./scripts/install.sh)**
+**[→ Clone and install locally](https://github.com/ebalderasr/Cider-Shell.git)**
 
 <br>
 
@@ -43,18 +43,27 @@ Cider-Shell packages that work into a reproducible repo.
 
 ## How it works
 
-### 1. Install
+### 1. Clone the repo
+
+If you do not have the repo yet:
+
+```bash
+mkdir -p ~/github
+git clone https://github.com/ebalderasr/Cider-Shell.git ~/github/Cider-Shell
+cd ~/github/Cider-Shell
+```
+
+### 2. Install
 
 Run the installer:
 
 ```bash
-cd ~/github/Cider-Shell
 ./scripts/install.sh
 ```
 
 This installs the base GNOME tools, the WhiteSur theme stack, bundled wallpapers, and the main system settings.
 
-### 2. Enable extensions
+### 3. Enable extensions
 
 Open `Extension Manager` or `Administrador de extensiones` and install:
 
@@ -65,22 +74,20 @@ Open `Extension Manager` or `Administrador de extensiones` and install:
 Then apply the extension-aware polish:
 
 ```bash
-cd ~/github/Cider-Shell
 ./scripts/post-install.sh
 ```
 
-### 3. Verify
+### 4. Verify
 
 Run the built-in checker:
 
 ```bash
-cd ~/github/Cider-Shell
 ./scripts/check.sh
 ```
 
 It validates theme, dock, shell styling, fonts, touchpad behavior, shortcuts, terminal settings, and extension state.
 
-### 4. Fine-tune
+### 5. Fine-tune
 
 Optional finishing steps and bilingual extension notes live here:
 
@@ -148,14 +155,12 @@ Cider-Shell/
 Apply one of them:
 
 ```bash
-cd ~/github/Cider-Shell
 ./scripts/apply-wallpaper.sh daybreak.svg
 ```
 
 List available wallpapers:
 
 ```bash
-cd ~/github/Cider-Shell
 ./scripts/apply-wallpaper.sh --list
 ```
 
@@ -224,6 +229,8 @@ Cider-Shell/
 Flujo recomendado:
 
 ```bash
+mkdir -p ~/github
+git clone https://github.com/ebalderasr/Cider-Shell.git ~/github/Cider-Shell
 cd ~/github/Cider-Shell
 ./scripts/install.sh
 ./scripts/post-install.sh
