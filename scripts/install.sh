@@ -83,7 +83,19 @@ gsettings set org.gnome.desktop.interface clock-show-weekday false
 gsettings set org.gnome.desktop.interface clock-show-seconds false
 gsettings set org.gnome.desktop.interface enable-hot-corners false
 gsettings set org.gnome.desktop.interface show-battery-percentage true
+gsettings set org.gnome.desktop.interface enable-animations true
+gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
+gsettings set org.gnome.desktop.peripherals.mouse natural-scroll true
+gsettings set org.gnome.desktop.background picture-options "zoom"
+gsettings set org.gnome.desktop.screensaver picture-options "zoom"
+gsettings set org.gnome.nautilus.preferences show-delete-permanently true
+gsettings set org.gnome.nautilus.preferences default-folder-viewer "list-view"
 gsettings set org.gnome.shell favorite-apps "['firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']"
+
+if gsettings list-schemas | grep -qx "org.gnome.shell.extensions.user-theme"; then
+  gsettings set org.gnome.shell.extensions.user-theme name "WhiteSur-Light"
+fi
 
 log "Configuring dock"
 if apply_if_schema_exists org.gnome.shell.extensions.ubuntu-dock \
@@ -110,14 +122,20 @@ else
   echo "No supported dock schema detected. Skipping dock settings."
 fi
 
+if command -v bash >/dev/null 2>&1 && [ -x "$REPO_ROOT/scripts/post-install.sh" ]; then
+  log "Applying post-install visual polish"
+  bash "$REPO_ROOT/scripts/post-install.sh"
+fi
+
 cat <<EOF
 
 Cider-Shell setup finished.
 
 Next recommended steps:
 1. Open Extension Manager / Administrador de extensiones
-2. Install: User Themes, Just Perfection, Blur my Shell
+2. Install and enable: User Themes, Just Perfection, Blur my Shell
 3. Follow: $REPO_ROOT/docs/extension-manager-guide.md
-4. Log out and back in, or reboot
+4. Run: $REPO_ROOT/scripts/check.sh
+5. Log out and back in, or reboot
 
 EOF
