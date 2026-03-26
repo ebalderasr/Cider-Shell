@@ -17,6 +17,26 @@ check_value() {
   fi
 }
 
+check_extension() {
+  local uuid="$1"
+  local label="$2"
+
+  if ! command -v gnome-extensions >/dev/null 2>&1; then
+    echo "[INFO] gnome-extensions command not found"
+    return
+  fi
+
+  if gnome-extensions list 2>/dev/null | grep -Fxq "$uuid"; then
+    if gnome-extensions info "$uuid" 2>/dev/null | grep -Fq "State: ENABLED"; then
+      printf '[OK] %s extension is installed and enabled\n' "$label"
+    else
+      printf '[WARN] %s extension is installed but not enabled\n' "$label"
+    fi
+  else
+    printf '[WARN] %s extension is not installed\n' "$label"
+  fi
+}
+
 echo "Cider-Shell configuration check"
 echo
 
@@ -35,6 +55,10 @@ else
   echo "[INFO] User Themes schema not found"
 fi
 
+check_extension "user-theme@gnome-shell-extensions.gcampax.github.com" "User Themes"
+check_extension "just-perfection-desktop@just-perfection" "Just Perfection"
+check_extension "blur-my-shell@aunetx" "Blur my Shell"
+
 if gsettings list-schemas | grep -qx "org.gnome.shell.extensions.ubuntu-dock"; then
   check_value "Dock position" org.gnome.shell.extensions.ubuntu-dock dock-position "'BOTTOM'"
   check_value "Dock auto-hide" org.gnome.shell.extensions.ubuntu-dock autohide "true"
@@ -49,6 +73,5 @@ fi
 
 echo
 echo "Manual checks still recommended:"
-echo "- Confirm User Themes, Just Perfection, and Blur my Shell are installed and enabled"
 echo "- Confirm the shell theme is set in Tweaks / Retoques"
 echo "- Reboot or log out if a theme did not apply immediately"

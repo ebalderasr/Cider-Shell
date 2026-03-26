@@ -127,6 +127,11 @@ if command -v bash >/dev/null 2>&1 && [ -x "$REPO_ROOT/scripts/post-install.sh" 
   bash "$REPO_ROOT/scripts/post-install.sh"
 fi
 
+if command -v bash >/dev/null 2>&1 && [ -x "$REPO_ROOT/scripts/apply-wallpaper.sh" ]; then
+  log "Applying bundled wallpaper"
+  bash "$REPO_ROOT/scripts/apply-wallpaper.sh" daybreak.svg
+fi
+
 cat <<EOF
 
 Cider-Shell setup finished.
@@ -135,7 +140,8 @@ Next recommended steps:
 1. Open Extension Manager / Administrador de extensiones
 2. Install and enable: User Themes, Just Perfection, Blur my Shell
 3. Follow: $REPO_ROOT/docs/extension-manager-guide.md
-4. Run: $REPO_ROOT/scripts/check.sh
-5. Log out and back in, or reboot
+4. Run: $REPO_ROOT/scripts/post-install.sh
+5. Run: $REPO_ROOT/scripts/check.sh
+6. Log out and back in, or reboot
 
 EOF

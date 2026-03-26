@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7efe4"/>
+      <stop offset="42%" stop-color="#d4e5ec"/>
+      <stop offset="100%" stop-color="#8bb9c8"/>
+    </linearGradient>
+    <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f9f2dd"/>
+      <stop offset="100%" stop-color="#f1d2a2"/>
+    </linearGradient>
+    <linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b8d8de"/>
+      <stop offset="100%" stop-color="#7eb3bd"/>
+    </linearGradient>
+    <linearGradient id="wave3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6e95a1"/>
+      <stop offset="100%" stop-color="#456873"/>
+    </linearGradient>
+  </defs>
+  <rect width="2560" height="1600" fill="url(#bg)"/>
+  <circle cx="1930" cy="305" r="145" fill="#fff2cc" opacity="0.75"/>
+  <path d="M0 1040C291 952 491 1096 779 1026C1058 960 1144 840 1424 795C1686 753 1932 828 2165 782C2346 746 2465 680 2560 626V1600H0Z" fill="url(#wave1)" opacity="0.92"/>
+  <path d="M0 1176C184 1117 396 1080 642 1096C946 1117 1117 1260 1434 1220C1716 1184 1896 1021 2150 1017C2325 1014 2453 1077 2560 1144V1600H0Z" fill="url(#wave2)" opacity="0.9"/>
+  <path d="M0 1318C208 1254 457 1230 734 1276C982 1317 1212 1426 1478 1400C1738 1375 1933 1251 2146 1234C2316 1220 2449 1266 2560 1330V1600H0Z" fill="url(#wave3)" opacity="0.92"/>
+</svg>
