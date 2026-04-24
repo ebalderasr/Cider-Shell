@@ -39,6 +39,48 @@ apply_if_schema_exists() {
   return 1
 }
 
+install_chromium_titlebar_override() {
+  local desktop_id="$1"
+  local binary="$2"
+  local icon="$3"
+  local name="$4"
+  local mime="$5"
+  local target_dir="$HOME/.local/share/applications"
+  local target_file="$target_dir/${desktop_id}.desktop"
+  local no_display_line=""
+
+  mkdir -p "$target_dir"
+
+  if [[ "$desktop_id" == com.* ]]; then
+    no_display_line="NoDisplay=true"
+  fi
+
+  cat >"$target_file" <<EOF
+[Desktop Entry]
+Version=1.0
+Name=$name
+GenericName=Web Browser
+Comment=Access the Internet
+Exec=$binary --ozone-platform=x11 %U
+StartupNotify=true
+Terminal=false
+Icon=$icon
+Type=Application
+Categories=Network;WebBrowser;
+MimeType=$mime
+Actions=new-window;new-private-window;
+$no_display_line
+
+[Desktop Action new-window]
+Name=New Window
+Exec=$binary --ozone-platform=x11
+
+[Desktop Action new-private-window]
+Name=New Incognito Window
+Exec=$binary --ozone-platform=x11 --incognito
+EOF
+}
+
 require_command sudo
 require_command git
 require_command gsettings
@@ -144,6 +186,34 @@ else
   echo "No supported dock schema detected. Skipping dock settings."
 fi
 
+if [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
+  log "Installing Chromium launcher overrides for Wayland sessions"
+  install_chromium_titlebar_override \
+    "google-chrome" \
+    "/usr/bin/google-chrome-stable" \
+    "google-chrome" \
+    "Google Chrome" \
+    "application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/google-chrome;"
+  install_chromium_titlebar_override \
+    "com.google.Chrome" \
+    "/usr/bin/google-chrome-stable" \
+    "google-chrome" \
+    "Google Chrome" \
+    "application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/google-chrome;"
+  install_chromium_titlebar_override \
+    "brave-browser" \
+    "/usr/bin/brave-browser-stable" \
+    "brave-browser" \
+    "Brave Web Browser" \
+    "application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/chromium;"
+  install_chromium_titlebar_override \
+    "com.brave.Browser" \
+    "/usr/bin/brave-browser-stable" \
+    "brave-browser" \
+    "Brave Web Browser" \
+    "application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/chromium;"
+fi
+
 if command -v bash >/dev/null 2>&1 && [ -x "$REPO_ROOT/scripts/post-install.sh" ]; then
   log "Applying post-install visual polish"
   bash "$REPO_ROOT/scripts/post-install.sh"
@@ -164,6 +234,7 @@ Next recommended steps:
 3. Follow: $REPO_ROOT/docs/extension-manager-guide.md
 4. Run: $REPO_ROOT/scripts/post-install.sh
 5. Run: $REPO_ROOT/scripts/check.sh
-6. Log out and back in, or reboot
+6. Restart Chrome / Brave if they were already open
+7. Log out and back in, or reboot
 
 EOF

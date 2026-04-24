@@ -61,7 +61,7 @@ Run the installer:
 ./scripts/install.sh
 ```
 
-This installs the base GNOME tools, the WhiteSur theme stack, bundled wallpapers, and the main system settings.
+This installs the base GNOME tools, the WhiteSur theme stack, bundled wallpapers, the main system settings, and Chromium launcher overrides for Wayland sessions so Chrome and Brave are more likely to use system-style window controls.
 
 ### 3. Enable extensions
 
@@ -110,6 +110,7 @@ Optional finishing steps and bilingual extension notes live here:
 | Terminal | light profile, larger font, cleaner defaults |
 | Input | natural scroll, finger-based touchpad click behavior |
 | Shortcuts | `Super+W`, `Super+M`, `Super+T`, `Super+N` |
+| Chromium browsers on Wayland | local launchers force `--ozone-platform=x11` for more consistent system title bars in Chrome and Brave |
 
 ---
 
@@ -207,6 +208,8 @@ Cider-Shell/
   Run `./scripts/check.sh` again. Current versions inspect both GNOME schemas and local extension installs in `~/.local/share/gnome-shell/extensions`.
 - `Blur my Shell or Just Perfection settings were skipped`
   Install and enable the extension first, then rerun `./scripts/post-install.sh`.
+- `Chrome or Brave still show different window buttons`
+  Close them fully and reopen them from the app launcher after `install.sh`. In Wayland sessions, Cider-Shell installs local desktop overrides that launch them with `--ozone-platform=x11` to improve title-bar consistency.
 - `Wallpaper did not update`
   Run `./scripts/apply-wallpaper.sh daybreak.svg` manually and relog if needed.
 - `I want to revert the setup`
