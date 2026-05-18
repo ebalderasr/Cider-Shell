@@ -2,16 +2,66 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-
 set_if_schema_exists() {
   local schema="$1"
   local key="$2"
   local value="$3"
 
-  if gsettings list-schemas | grep -qx "$schema"; then
+  if gsettings list-keys "$schema" 2>/dev/null | grep -Fx "$key" >/dev/null; then
     gsettings set "$schema" "$key" "$value"
+  fi
+}
+
+enable_shell_extension() {
+  local uuid="$1"
+  local enabled_extensions
+
+  if [ ! -d "$HOME/.local/share/gnome-shell/extensions/$uuid" ] && [ ! -d "/usr/share/gnome-shell/extensions/$uuid" ]; then
+    return 0
+  fi
+
+  set_if_schema_exists org.gnome.shell disable-user-extensions false
+  enabled_extensions="$(gsettings get org.gnome.shell enabled-extensions 2>/dev/null || printf '@as []')"
+
+  if [[ "$enabled_extensions" == *"'$uuid'"* ]]; then
+    return 0
+  fi
+
+  if [ "$enabled_extensions" = "@as []" ] || [ "$enabled_extensions" = "[]" ]; then
+    gsettings set org.gnome.shell enabled-extensions "['$uuid']"
+  else
+    gsettings set org.gnome.shell enabled-extensions "${enabled_extensions%]}, '$uuid']"
+  fi
+}
+
+configure_ptyxis() {
+  local profile_uuid
+  local profile_path
+
+  if ! gsettings list-schemas | grep -Fx "org.gnome.Ptyxis" >/dev/null; then
+    return 0
+  fi
+
+  set_if_schema_exists org.gnome.Ptyxis interface-style "light"
+  set_if_schema_exists org.gnome.Ptyxis use-system-font false
+  set_if_schema_exists org.gnome.Ptyxis font-name "Noto Sans Mono 13"
+  set_if_schema_exists org.gnome.Ptyxis default-columns "96"
+  set_if_schema_exists org.gnome.Ptyxis default-rows "28"
+  set_if_schema_exists org.gnome.Ptyxis restore-window-size false
+  set_if_schema_exists org.gnome.Ptyxis scrollbar-policy "never"
+  set_if_schema_exists org.gnome.Ptyxis audible-bell false
+  set_if_schema_exists org.gnome.Ptyxis visual-bell false
+  set_if_schema_exists org.gnome.Ptyxis cursor-shape "block"
+
+  profile_uuid="$(gsettings get org.gnome.Ptyxis default-profile-uuid 2>/dev/null | tr -d \')"
+  if [ -n "$profile_uuid" ]; then
+    profile_path="/org/gnome/Ptyxis/Profiles/${profile_uuid}/"
+    if gsettings list-keys "org.gnome.Ptyxis.Profile:${profile_path}" >/dev/null 2>&1; then
+      gsettings set "org.gnome.Ptyxis.Profile:${profile_path}" opacity 0.94
+      gsettings set "org.gnome.Ptyxis.Profile:${profile_path}" palette "Solarized Light"
+      gsettings set "org.gnome.Ptyxis.Profile:${profile_path}" label "Cider Light"
+      gsettings set "org.gnome.Ptyxis.Profile:${profile_path}" scrollback-lines 20000
+    fi
   fi
 }
 
@@ -21,7 +71,7 @@ set_if_schema_exists_with_dir() {
   local key="$3"
   local value="$4"
 
-  if [ -d "$schema_dir" ] && gsettings --schemadir "$schema_dir" list-schemas | grep -qx "$schema"; then
+  if [ -d "$schema_dir" ] && gsettings --schemadir "$schema_dir" list-keys "$schema" 2>/dev/null | grep -Fx "$key" >/dev/null; then
     gsettings --schemadir "$schema_dir" set "$schema" "$key" "$value"
     return 0
   fi
@@ -60,6 +110,9 @@ set_if_schema_exists org.gnome.Terminal.Legacy.Settings theme-variant "light"
 set_if_schema_exists org.gnome.Terminal.Legacy.Settings default-show-menubar false
 set_if_schema_exists org.gnome.nautilus.preferences default-folder-viewer "list-view"
 set_if_schema_exists org.gnome.nautilus.preferences show-delete-permanently true
+enable_shell_extension "user-theme@gnome-shell-extensions.gcampax.github.com"
+enable_shell_extension "just-perfection-desktop@just-perfection"
+enable_shell_extension "blur-my-shell@aunetx"
 set_if_schema_exists org.gnome.shell.extensions.user-theme name "WhiteSur-Light"
 
 if gsettings writable org.gnome.Terminal.ProfilesList default >/dev/null 2>&1; then
@@ -72,6 +125,8 @@ if gsettings writable org.gnome.Terminal.ProfilesList default >/dev/null 2>&1; t
   gsettings set "org.gnome.Terminal.Legacy.Profile:${TERMINAL_PROFILE_PATH}" scrollbar-policy "never"
   gsettings set "org.gnome.Terminal.Legacy.Profile:${TERMINAL_PROFILE_PATH}" visible-name "Cider Light"
 fi
+
+configure_ptyxis
 
 JUST_PERFECTION_SCHEMA_DIR="$HOME/.local/share/gnome-shell/extensions/just-perfection-desktop@just-perfection/schemas"
 if set_if_schema_exists_with_dir "$JUST_PERFECTION_SCHEMA_DIR" org.gnome.shell.extensions.just-perfection activities-button false; then

@@ -2,7 +2,7 @@
 
 # Cider-Shell
 
-### macOS-style desktop polish for Ubuntu 24.04 + GNOME
+### macOS-style desktop polish for Ubuntu + GNOME
 
 <br>
 
@@ -10,7 +10,7 @@
 
 <br>
 
-[![Platform](https://img.shields.io/badge/Platform-Ubuntu_24.04_·_GNOME_46-E95420?style=for-the-badge)]()
+[![Platform](https://img.shields.io/badge/Platform-Ubuntu_·_GNOME-E95420?style=for-the-badge)]()
 [![Style](https://img.shields.io/badge/Style-macOS--inspired_·_WhiteSur-34C759?style=for-the-badge)]()
 [![Language](https://img.shields.io/badge/Docs-English_·_Español-4A90D9?style=for-the-badge)]()
 [![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
@@ -23,7 +23,7 @@
 
 ## What is Cider-Shell?
 
-Cider-Shell is a **copy-paste-friendly desktop setup repo** that transforms Ubuntu 24.04 + GNOME into a cleaner macOS-style environment. It installs the WhiteSur theme stack, applies GNOME settings, tunes the dock, refines fonts, and adds a post-install polish layer for extensions like `Just Perfection` and `Blur my Shell`.
+Cider-Shell is a **copy-paste-friendly desktop setup repo** that transforms Ubuntu + GNOME into a cleaner macOS-style environment. It installs the WhiteSur theme stack, applies GNOME settings, tunes the dock, refines fonts, and adds a post-install polish layer for extensions like `Just Perfection` and `Blur my Shell`.
 
 It is designed for users with Ubuntu in English or Spanish. The automated setup uses terminal commands and `gsettings`, so it does not depend on translated menu names. Manual extension steps are documented in both languages.
 
@@ -61,17 +61,13 @@ Run the installer:
 ./scripts/install.sh
 ```
 
-This installs the base GNOME tools, the WhiteSur theme stack, bundled wallpapers, the main system settings, and Chromium launcher overrides for Wayland sessions so Chrome and Brave are more likely to use system-style window controls.
+This installs the base GNOME tools, the WhiteSur theme stack, bundled wallpapers, the main system settings, `User Themes`, `Just Perfection`, `Blur my Shell`, and Chromium launcher overrides for installed Chrome/Brave browsers on Wayland sessions so they are more likely to use system-style window controls.
 
-### 3. Enable extensions
+### 3. Reload GNOME Shell
 
-Open `Extension Manager` or `Administrador de extensiones` and install:
+The installer downloads, installs, enables, and configures the recommended GNOME extensions automatically. Log out and back in, or reboot, so GNOME Shell fully reloads newly installed extensions.
 
-- `User Themes`
-- `Just Perfection`
-- `Blur my Shell`
-
-Then apply the extension-aware polish:
+If you install or update extensions later, reapply the extension-aware polish:
 
 ```bash
 ./scripts/post-install.sh
@@ -91,8 +87,8 @@ It validates theme, dock, shell styling, fonts, touchpad behavior, shortcuts, te
 
 Optional finishing steps and bilingual extension notes live here:
 
-- [docs/extension-manager-guide.md](/home/ebald/github/Cider-Shell/docs/extension-manager-guide.md)
-- [docs/visual-finishing.md](/home/ebald/github/Cider-Shell/docs/visual-finishing.md)
+- [docs/extension-manager-guide.md](docs/extension-manager-guide.md)
+- [docs/visual-finishing.md](docs/visual-finishing.md)
 
 ---
 
@@ -121,7 +117,7 @@ Optional finishing steps and bilingual extension notes live here:
 | **Copy-paste setup** | Install and configure the desktop with shell scripts and `gsettings` |
 | **Bilingual-friendly** | Works for Ubuntu users in English or Spanish |
 | **Theme stack included** | WhiteSur GTK, icons, and cursors installed automatically |
-| **Extension-aware polish** | Supports `User Themes`, `Just Perfection`, and `Blur my Shell` |
+| **Extension-aware polish** | Automatically installs and configures `User Themes`, `Just Perfection`, and `Blur my Shell` |
 | **System verification** | `check.sh` confirms what applied and what is still missing |
 | **Bundled wallpapers** | Includes project wallpapers and a wallpaper apply script |
 | **Safe rollback** | `uninstall.sh` resets GNOME settings changed by the repo |
@@ -171,9 +167,9 @@ List available wallpapers:
 
 | Requirement | Notes |
 |---|---|
-| Ubuntu | Tested on Ubuntu 24.04 |
-| GNOME | Tested on GNOME 46 |
-| Internet access | Needed to download WhiteSur repositories during install |
+| Ubuntu | Built for Ubuntu desktop releases with GNOME |
+| GNOME | Tested on GNOME 46; scripts guard optional keys for newer GNOME versions |
+| Internet access | Needed to download WhiteSur repositories and GNOME extension packages during install |
 | Sudo access | Required for package installation |
 
 ---
@@ -203,13 +199,13 @@ Cider-Shell/
 ## Troubleshooting
 
 - `Shell theme did not change`
-  Install and enable `User Themes`, run `./scripts/post-install.sh`, then log out and back in.
+  Run `./scripts/post-install.sh`, then log out and back in.
 - `Extensions are enabled but the check still fails`
   Run `./scripts/check.sh` again. Current versions inspect both GNOME schemas and local extension installs in `~/.local/share/gnome-shell/extensions`.
 - `Blur my Shell or Just Perfection settings were skipped`
-  Install and enable the extension first, then rerun `./scripts/post-install.sh`.
+  Rerun `./scripts/install.sh` to download missing extensions, or run `./scripts/post-install.sh` after installing them manually.
 - `Chrome or Brave still show different window buttons`
-  Close them fully and reopen them from the app launcher after `install.sh`. In Wayland sessions, Cider-Shell installs local desktop overrides that launch them with `--ozone-platform=x11` to improve title-bar consistency.
+  Close them fully and reopen them from the app launcher after `install.sh`. In Wayland sessions, Cider-Shell installs local desktop overrides only when the browser binary exists, then launches it with `--ozone-platform=x11` to improve title-bar consistency.
 - `Wallpaper did not update`
   Run `./scripts/apply-wallpaper.sh daybreak.svg` manually and relog if needed.
 - `I want to revert the setup`
@@ -227,7 +223,7 @@ Cider-Shell/
 
 ## Spanish
 
-`Cider-Shell` convierte Ubuntu 24.04 + GNOME en un escritorio más parecido a macOS con una instalación reproducible desde terminal.
+`Cider-Shell` convierte Ubuntu + GNOME en un escritorio más parecido a macOS con una instalación reproducible desde terminal.
 
 Flujo recomendado:
 
@@ -236,20 +232,15 @@ mkdir -p ~/github
 git clone https://github.com/ebalderasr/Cider-Shell.git ~/github/Cider-Shell
 cd ~/github/Cider-Shell
 ./scripts/install.sh
-./scripts/post-install.sh
 ./scripts/check.sh
 ```
 
-Extensiones recomendadas en `Administrador de extensiones`:
-
-- `User Themes`
-- `Just Perfection`
-- `Blur my Shell`
+El instalador descarga, instala, activa y configura automaticamente `User Themes`, `Just Perfection` y `Blur my Shell`. Despues de instalar, cierra sesion y vuelve a entrar, o reinicia, para que GNOME Shell recargue las extensiones.
 
 Guías bilingües:
 
-- [docs/extension-manager-guide.md](/home/ebald/github/Cider-Shell/docs/extension-manager-guide.md)
-- [docs/visual-finishing.md](/home/ebald/github/Cider-Shell/docs/visual-finishing.md)
+- [docs/extension-manager-guide.md](docs/extension-manager-guide.md)
+- [docs/visual-finishing.md](docs/visual-finishing.md)
 
 ---
 

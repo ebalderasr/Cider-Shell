@@ -1,10 +1,12 @@
 # Extension Manager Guide
 
+`install.sh` installs and configures the recommended extensions automatically. Use this guide only as a fallback when you want to inspect or fine-tune values manually in Extension Manager.
+
 This guide uses both English and Spanish names because GNOME translations vary by package version.
 
 ## 1. User Themes / Temas de usuario
 
-Install and enable:
+If automatic setup did not apply, install and enable:
 
 - `User Themes`
 - `Temas de usuario`

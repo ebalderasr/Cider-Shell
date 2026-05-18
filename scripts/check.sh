@@ -30,6 +30,11 @@ check_value() {
   local expected="$4"
   local actual
 
+  if ! gsettings list-keys "$schema" 2>/dev/null | grep -Fx "$key" >/dev/null; then
+    printf '[INFO] %s key not found\n' "$label"
+    return
+  fi
+
   actual="$(gsettings get "$schema" "$key" 2>/dev/null || true)"
   if [ "$actual" = "$expected" ]; then
     printf '[OK] %s -> %s\n' "$label" "$actual"
@@ -41,20 +46,32 @@ check_value() {
 check_extension() {
   local uuid="$1"
   local label="$2"
+  local installed=false
+  local enabled=false
+  local enabled_extensions
 
-  if ! command -v gnome-extensions >/dev/null 2>&1; then
-    echo "[INFO] gnome-extensions command not found"
-    return
+  if [ -d "$HOME/.local/share/gnome-shell/extensions/$uuid" ] || [ -d "/usr/share/gnome-shell/extensions/$uuid" ]; then
+    installed=true
   fi
 
-  if gnome-extensions list 2>/dev/null | grep -Fxq "$uuid"; then
+  if command -v gnome-extensions >/dev/null 2>&1 && gnome-extensions list 2>/dev/null | grep -Fx "$uuid" >/dev/null; then
+    installed=true
     if gnome-extensions info "$uuid" 2>/dev/null | grep -Eq "State: (ENABLED|ACTIVE)"; then
-      printf '[OK] %s extension is installed and enabled\n' "$label"
-    else
-      printf '[WARN] %s extension is installed but not enabled\n' "$label"
+      enabled=true
     fi
-  else
+  fi
+
+  enabled_extensions="$(gsettings get org.gnome.shell enabled-extensions 2>/dev/null || true)"
+  if [[ "$enabled_extensions" == *"'$uuid'"* ]]; then
+    enabled=true
+  fi
+
+  if [ "$installed" != true ]; then
     printf '[WARN] %s extension is not installed\n' "$label"
+  elif [ "$enabled" = true ]; then
+    printf '[OK] %s extension is installed and enabled\n' "$label"
+  else
+    printf '[WARN] %s extension is installed but not enabled\n' "$label"
   fi
 }
 
@@ -73,6 +90,7 @@ check_value "Hot corners" org.gnome.desktop.interface enable-hot-corners "false"
 check_value "Battery percentage" org.gnome.desktop.interface show-battery-percentage "true"
 check_value "Touchpad click method" org.gnome.desktop.peripherals.touchpad click-method "'fingers'"
 check_value "Touchpad speed" org.gnome.desktop.peripherals.touchpad speed "0.29999999999999999"
+check_value "Mouse natural scroll" org.gnome.desktop.peripherals.mouse natural-scroll "false"
 check_value "Close shortcut" org.gnome.desktop.wm.keybindings close "['<Alt>F4', '<Super>w']"
 check_value "Minimize shortcut" org.gnome.desktop.wm.keybindings minimize "['<Super>h', '<Super>m']"
 check_value "Terminal shortcut" org.gnome.settings-daemon.plugins.media-keys terminal "['<Primary><Alt>t', '<Super>t']"
@@ -81,7 +99,7 @@ check_value "Nautilus default view" org.gnome.nautilus.preferences default-folde
 check_value "Terminal variant" org.gnome.Terminal.Legacy.Settings theme-variant "'light'"
 check_value "Auto maximize" org.gnome.mutter auto-maximize "false"
 
-if gsettings list-schemas | grep -qx "org.gnome.shell.extensions.user-theme"; then
+if gsettings list-schemas | grep -Fx "org.gnome.shell.extensions.user-theme" >/dev/null; then
   check_value "Shell theme" org.gnome.shell.extensions.user-theme name "'WhiteSur-Light'"
 else
   echo "[INFO] User Themes schema not found"
@@ -96,11 +114,20 @@ check_value_with_dir "Just Perfection clock position" "$HOME/.local/share/gnome-
 check_value_with_dir "Blur panel enabled" "$HOME/.local/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas" org.gnome.shell.extensions.blur-my-shell.panel blur "true"
 check_value_with_dir "Blur dock radius" "$HOME/.local/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas" org.gnome.shell.extensions.blur-my-shell.dash-to-dock corner-radius "18"
 
-if gsettings list-schemas | grep -qx "org.gnome.shell.extensions.ubuntu-dock"; then
+if gsettings list-schemas | grep -Fx "org.gnome.Ptyxis" >/dev/null; then
+  check_value "Ptyxis style" org.gnome.Ptyxis interface-style "'light'"
+  check_value "Ptyxis font" org.gnome.Ptyxis font-name "'Noto Sans Mono 13'"
+  check_value "Ptyxis system font" org.gnome.Ptyxis use-system-font "false"
+  check_value "Ptyxis columns" org.gnome.Ptyxis default-columns "uint32 96"
+  check_value "Ptyxis rows" org.gnome.Ptyxis default-rows "uint32 28"
+  check_value "Ptyxis scrollbar" org.gnome.Ptyxis scrollbar-policy "'never'"
+fi
+
+if gsettings list-schemas | grep -Fx "org.gnome.shell.extensions.ubuntu-dock" >/dev/null; then
   check_value "Dock position" org.gnome.shell.extensions.ubuntu-dock dock-position "'BOTTOM'"
   check_value "Dock auto-hide" org.gnome.shell.extensions.ubuntu-dock autohide "true"
   check_value "Dock panel mode" org.gnome.shell.extensions.ubuntu-dock extend-height "false"
-elif gsettings list-schemas | grep -qx "org.gnome.shell.extensions.dash-to-dock"; then
+elif gsettings list-schemas | grep -Fx "org.gnome.shell.extensions.dash-to-dock" >/dev/null; then
   check_value "Dock position" org.gnome.shell.extensions.dash-to-dock dock-position "'BOTTOM'"
   check_value "Dock auto-hide" org.gnome.shell.extensions.dash-to-dock autohide "true"
   check_value "Dock panel mode" org.gnome.shell.extensions.dash-to-dock extend-height "false"
