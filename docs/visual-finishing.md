@@ -14,6 +14,15 @@ Recommended finishing touches:
 - Keep favorites minimal: browser, files, terminal, settings, app store
 - Reboot after theme changes if the shell theme does not refresh immediately
 
+Keyboard shortcuts added by Cider-Shell:
+
+- `Super+Tab` — app switcher (macOS-style Cmd+Tab, groups by application)
+- `Super+Space` — GNOME search (Spotlight equivalent)
+- `Super+W` — close window
+- `Super+H` / `Super+M` — minimize window
+- `Super+T` — open terminal
+- `Super+N` — open file manager
+
 Optional upgrades:
 
 - If you already own or installed `SF Pro`, switch fonts manually for a closer macOS feel
@@ -33,6 +42,15 @@ Ajustes recomendados:
 - usa `Blur my Shell` con desenfoque medio, no exagerado
 - deja pocos favoritos en el dock: navegador, archivos, terminal, configuracion y tienda
 - reinicia sesion si el tema del shell no cambia de inmediato
+
+Atajos de teclado instalados por Cider-Shell:
+
+- `Super+Tab` — cambiador de apps estilo macOS (Cmd+Tab), agrupa por aplicacion
+- `Super+Space` — busqueda GNOME (equivalente a Spotlight)
+- `Super+W` — cerrar ventana
+- `Super+H` / `Super+M` — minimizar ventana
+- `Super+T` — abrir terminal
+- `Super+N` — abrir gestor de archivos
 
 Mejoras opcionales:
 
