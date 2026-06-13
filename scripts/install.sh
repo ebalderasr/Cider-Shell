@@ -285,7 +285,10 @@ if apply_if_schema_exists org.gnome.shell.extensions.ubuntu-dock \
   autohide "true" \
   intellihide "true" \
   show-trash "false" \
-  show-mounts "false"; then
+  show-mounts "false" \
+  dock-fixed "false" \
+  background-opacity "0.45" \
+  show-show-apps-button "false"; then
   echo "Configured ubuntu-dock"
 elif apply_if_schema_exists org.gnome.shell.extensions.dash-to-dock \
   dock-position "'BOTTOM'" \
@@ -295,7 +298,10 @@ elif apply_if_schema_exists org.gnome.shell.extensions.dash-to-dock \
   autohide "true" \
   intellihide "true" \
   show-trash "false" \
-  show-mounts "false"; then
+  show-mounts "false" \
+  dock-fixed "false" \
+  background-opacity "0.45" \
+  show-show-apps-button "false"; then
   echo "Configured dash-to-dock"
 else
   echo "No supported dock schema detected. Skipping dock settings."
